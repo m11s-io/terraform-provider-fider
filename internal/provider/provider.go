@@ -67,6 +67,7 @@ func (p *FiderProvider) Configure(ctx context.Context, req provider.ConfigureReq
 func (p *FiderProvider) Resources(_ context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		NewOAuthConfigResource,
+		NewTenantSettingsResource,
 	}
 }
 

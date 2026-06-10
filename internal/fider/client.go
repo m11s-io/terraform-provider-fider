@@ -109,6 +109,32 @@ func (c *Client) SaveOAuthConfig(ctx context.Context, cfg OAuthConfig) error {
 	return nil
 }
 
+// TenantSettings represents the general settings for a Fider tenant.
+type TenantSettings struct {
+	Title          string `json:"title"`
+	Invitation     string `json:"invitation"`
+	WelcomeMessage string `json:"welcomeMessage"`
+	WelcomeHeader  string `json:"welcomeHeader"`
+	CNAME          string `json:"cname"`
+	Locale         string `json:"locale"`
+}
+
+// UpdateTenantSettings updates the general settings for the current tenant.
+// Fider has no GET endpoint for settings; state is the source of truth.
+func (c *Client) UpdateTenantSettings(ctx context.Context, s TenantSettings) error {
+	resp, err := c.do(ctx, http.MethodPost, "/_api/admin/settings/general", s)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		body, _ := io.ReadAll(resp.Body)
+		return fmt.Errorf("unexpected status %d: %s", resp.StatusCode, string(body))
+	}
+	return nil
+}
+
 // DisableOAuthConfig sets the OAuth config status to disabled.
 // Fider has no delete endpoint for custom OAuth configs.
 func (c *Client) DisableOAuthConfig(ctx context.Context, provider string) error {
