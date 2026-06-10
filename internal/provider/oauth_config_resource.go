@@ -22,7 +22,7 @@ type OAuthConfigResource struct {
 }
 
 type OAuthConfigModel struct {
-	Provider          types.String `tfsdk:"provider"`
+	ProviderName      types.String `tfsdk:"provider_name"`
 	DisplayName       types.String `tfsdk:"display_name"`
 	Status            types.Int64  `tfsdk:"status"`
 	ClientID          types.String `tfsdk:"client_id"`
@@ -54,9 +54,9 @@ func (r *OAuthConfigResource) Schema(_ context.Context, _ resource.SchemaRequest
 			"> **Note:** Fider has no delete API for custom OAuth configs. " +
 			"On `terraform destroy`, the config is disabled (status=1) rather than removed.",
 		Attributes: map[string]schema.Attribute{
-			"provider": schema.StringAttribute{
+			"provider_name": schema.StringAttribute{
 				MarkdownDescription: "Unique provider slug. Used as the identifier and in the OAuth callback URL " +
-					"(`/oauth/<provider>/callback`). Changing this forces a new resource.",
+					"(`/oauth/<provider_name>/callback`). Changing this forces a new resource.",
 				Required: true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
@@ -168,7 +168,7 @@ func (r *OAuthConfigResource) Read(ctx context.Context, req resource.ReadRequest
 		return
 	}
 
-	cfg, err := r.client.GetOAuthConfig(ctx, data.Provider.ValueString())
+	cfg, err := r.client.GetOAuthConfig(ctx, data.ProviderName.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error reading OAuth config", err.Error())
 		return
@@ -223,14 +223,14 @@ func (r *OAuthConfigResource) Delete(ctx context.Context, req resource.DeleteReq
 		return
 	}
 
-	if err := r.client.DisableOAuthConfig(ctx, data.Provider.ValueString()); err != nil {
+	if err := r.client.DisableOAuthConfig(ctx, data.ProviderName.ValueString()); err != nil {
 		resp.Diagnostics.AddError("Error disabling OAuth config", err.Error())
 	}
 }
 
 func modelToConfig(m OAuthConfigModel) fider.OAuthConfig {
 	return fider.OAuthConfig{
-		Provider:          m.Provider.ValueString(),
+		Provider:          m.ProviderName.ValueString(),
 		DisplayName:       m.DisplayName.ValueString(),
 		Status:            int(m.Status.ValueInt64()),
 		ClientID:          m.ClientID.ValueString(),

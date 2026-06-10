@@ -27,7 +27,7 @@ provider "fider" {
 }
 
 resource "fider_oauth_config" "keycloak" {
-  provider      = "keycloak"
+  provider_name = "keycloak"
   display_name  = "Keycloak"
   client_id     = "fider"
   client_secret = var.keycloak_client_secret
