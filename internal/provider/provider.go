@@ -58,7 +58,7 @@ func (p *FiderProvider) Schema(_ context.Context, _ provider.SchemaRequest, resp
 				Sensitive:           true,
 			},
 			"bootstrap_url": schema.StringAttribute{
-				MarkdownDescription: "Base URL of the Fider instance for bootstrap-mode operations (e.g. `https://stage.internal.m11s.io`). Can also be set via the `FIDER_BOOTSTRAP_URL` environment variable.",
+				MarkdownDescription: "Base URL of the Fider instance for bootstrap-mode operations (e.g. `https://fider.internal.example.com`). Can also be set via the `FIDER_BOOTSTRAP_URL` environment variable.",
 				Optional:            true,
 			},
 			"bootstrap_token": schema.StringAttribute{
