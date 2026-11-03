@@ -93,7 +93,6 @@ func (p *FiderProvider) Resources(_ context.Context) []func() resource.Resource 
 	return []func() resource.Resource{
 		NewOAuthConfigResource,
 		NewTenantSettingsResource,
-		NewTenantResource,
 	}
 }
 
