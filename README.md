@@ -65,4 +65,4 @@ make test     # run tests
 
 ## License
 
-MIT
+Apache-2.0
