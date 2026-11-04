@@ -41,12 +41,10 @@ func (p *FiderProvider) Metadata(_ context.Context, _ provider.MetadataRequest, 
 func (p *FiderProvider) Schema(_ context.Context, _ provider.SchemaRequest, resp *provider.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		MarkdownDescription: "Provider for managing [Fider](https://fider.io) self-hosted feedback platform configuration.\n\n" +
-			"The provider supports two modes, which can be combined:\n\n" +
-			"- **Bootstrap mode** (`bootstrap_url` + `bootstrap_token`): provisions and configures " +
-			"tenants instance-wide through the internal bootstrap API. Used by `fider_tenant` and by " +
-			"`fider_oauth_config` when its `tenant` attribute is set. Enables a single-apply workflow.\n" +
-			"- **Tenant mode** (`url` + `api_key`): manages resources for a single existing tenant using " +
-			"that tenant's admin API key.",
+			"Tenant mode (`url` + `api_key`) manages the available resources for a single existing " +
+			"tenant using that tenant's admin API key. `bootstrap_url` and `bootstrap_token` configure " +
+			"the internal bootstrap API client, but no provider resource currently exposes those " +
+			"bootstrap operations. The provider has no separate `fider_tenant` resource.",
 		Attributes: map[string]schema.Attribute{
 			"url": schema.StringAttribute{
 				MarkdownDescription: "Base URL of a single Fider tenant (e.g. `https://feedback.example.com`) for tenant-mode resources. Can also be set via the `FIDER_URL` environment variable.",
@@ -93,7 +91,6 @@ func (p *FiderProvider) Resources(_ context.Context) []func() resource.Resource 
 	return []func() resource.Resource{
 		NewOAuthConfigResource,
 		NewTenantSettingsResource,
-		NewTenantResource,
 	}
 }
 
